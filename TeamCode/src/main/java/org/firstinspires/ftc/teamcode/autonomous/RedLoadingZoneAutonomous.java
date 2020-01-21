@@ -8,11 +8,12 @@ public class RedLoadingZoneAutonomous extends RobotController {
     public void runOpMode() {
         waitForStart();
 
-        moveForward(-1, 2);
-        straifLeft(5, 10);
+        doAction("forward", 4);
+        //grab block?
+        doAction("rotate", 5);
+        doAction("forward", 5);
 
         stop();
     }
-
 
 }

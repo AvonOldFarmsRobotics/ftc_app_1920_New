@@ -35,10 +35,12 @@ public class StructureTester extends OpMode {
         }
 
         if (gamepad1.y) {
-            servoPos = Range.clip(servoPos + 0.1, 0.0, 0.5);
+            servoPos = Range.clip(servoPos + 0.1, 0.0, 1.0);
             servo.setPosition(servoPos);
         } else if (gamepad1.a) {
-            servoPos = Range.clip(servoPos - 0.1, 0.0, 0.5);
+            servoPos = Range.clip(servoPos - 0.1, 0.0, 1.0);
+            servo.setPosition(servoPos);
+        } else {
             servo.setPosition(servoPos);
         }
     }

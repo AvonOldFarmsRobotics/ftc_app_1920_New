@@ -22,20 +22,17 @@ public class MechTeleOp extends OpMode {
     DcMotor motorBR;
 
     //calibration coefficient (tweak to calibrate the motors (0 <= x <= 1))
-    final double calibFL = 1.00f;
-    final double calibFR = 1.00f;
-    final double calibBL = 1.00f;
-    final double calibBR = 1.00f;
+    final double calibFL = 0.90f; // 0.79
+    final double calibFR = 0.849f; // 0.75
+    final double calibBL = 0.962f; // 0.76
+    final double calibBR = 0.924f; // 0.73
 
     //claw motors
-    DcMotor clawLeft;
-    DcMotor clawRight;
+//    DcMotor clawLeft;
+//    DcMotor clawRight;
 
     //servo for foundation clip
 //    CRServo foundationClip;
-
-    //servo swinging the claw
-//    CRServo clawSwing;
 
     //matrix corresponding to motors
     double[][] motorPowers = {
@@ -147,22 +144,22 @@ public class MechTeleOp extends OpMode {
 
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        clawLeft = hardwareMap.get(DcMotor.class, "clawLeft");
-        clawRight = hardwareMap.get(DcMotor.class, "clawRight");
-
-        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        clawLeft = hardwareMap.get(DcMotor.class, "clawLeft");
+//        clawRight = hardwareMap.get(DcMotor.class, "clawRight");
+//
+//        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//
+//        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        foundationClip = hardwareMap.crservo.get("foundationClip");
 
@@ -204,8 +201,8 @@ public class MechTeleOp extends OpMode {
             };
 
             rightXMat = new double[][] {
-                    {-rightX,  rightX},
-                    {-rightX,  rightX}
+                    {rightX, -rightX},
+                    {rightX, -rightX}
             };
 
             rightYMat = new double[][] {
@@ -225,21 +222,21 @@ public class MechTeleOp extends OpMode {
         matrixToPowers(motorPowers);
 
         //claw control
-        if (gamepad1.right_trigger >= 0.1) {
-            clawRight.setPower(0.5);
-        } else if (gamepad1.right_bumper) {
-            clawRight.setPower(-0.5);
-        } else {
-            clawRight.setPower(0.0);
-        }
-
-        if (gamepad1.left_trigger >= 0.1) {
-            clawLeft.setPower(0.5);
-        } else if (gamepad1.left_bumper) {
-            clawLeft.setPower(-0.5);
-        } else {
-            clawLeft.setPower(0.0);
-        }
+//        if (gamepad1.right_trigger >= 0.1) {
+//            clawRight.setPower(0.5);
+//        } else if (gamepad1.right_bumper) {
+//            clawRight.setPower(-0.5);
+//        } else {
+//            clawRight.setPower(0.0);
+//        }
+//
+//        if (gamepad1.left_trigger >= 0.1) {
+//            clawLeft.setPower(0.5);
+//        } else if (gamepad1.left_bumper) {
+//            clawLeft.setPower(-0.5);
+//        } else {
+//            clawLeft.setPower(0.0);
+//        }
 
 
 //        //foundation clip control
@@ -252,6 +249,14 @@ public class MechTeleOp extends OpMode {
 //        }
 
 
+//        if(gamepad1.a) {
+//            moveForward(-1.0);
+//        } else if (gamepad1.b) {
+//            moveForward(-0.2);
+//        } else {
+//            moveForward(0.0);
+//        }
+
     }
 
     public float getLX() {
@@ -263,7 +268,7 @@ public class MechTeleOp extends OpMode {
     }
 
     public float getRX() {
-        return -gamepad1.right_stick_x;
+        return gamepad1.right_stick_x;
     }
     
     public float getRY() {

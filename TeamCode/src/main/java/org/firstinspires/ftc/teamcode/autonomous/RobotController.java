@@ -17,9 +17,9 @@ public abstract class RobotController extends LinearOpMode {
     DcMotor motorBR;
 
     final double calibFL = 1.00f;
-    final double calibFR = 1.00f;
-    final double calibBL = 1.00f;
-    final double calibBR = 1.00f;
+    final double calibFR = 0.50f;
+    final double calibBL = 0.50f;
+    final double calibBR = 0.50f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -40,8 +40,8 @@ public abstract class RobotController extends LinearOpMode {
 
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
