@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -22,17 +21,21 @@ public class MechTeleOp extends OpMode {
     DcMotor motorBR;
 
     //calibration coefficient (tweak to calibrate the motors (0 <= x <= 1))
-    final double calibFL = 0.90f; // 0.79
-    final double calibFR = 0.849f; // 0.75
-    final double calibBL = 0.962f; // 0.76
-    final double calibBR = 0.924f; // 0.73
+    final double calibFL = 1.0f;
+    final double calibFR = 1.0f;
+    final double calibBL = 1.0f;
+    final double calibBR = 1.0f;
 
     //claw motors
-//    DcMotor clawLeft;
-//    DcMotor clawRight;
+    DcMotor clawLeft;
+    DcMotor clawRight;
+
+    //elevator
+    DcMotor leftLift;
+    DcMotor rightLift;
 
     //servo for foundation clip
-//    CRServo foundationClip;
+    CRServo foundationClip;
 
     //matrix corresponding to motors
     double[][] motorPowers = {
@@ -137,6 +140,8 @@ public class MechTeleOp extends OpMode {
     }
 
     public void setupMotors() {
+
+        ///////////////////////////////////////////////////////////////////////////////// Drive Train
         motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
         motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
         motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
@@ -151,20 +156,31 @@ public class MechTeleOp extends OpMode {
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ///////////////////////////////////////////////////////////////////////////////// Drive Train
 
-//        clawLeft = hardwareMap.get(DcMotor.class, "clawLeft");
-//        clawRight = hardwareMap.get(DcMotor.class, "clawRight");
-//
-//        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-//        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
-//
-//        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ///////////////////////////////////////////////////////////////////////////////// Claw
+        clawLeft = hardwareMap.get(DcMotor.class, "leftClaw");
+        clawRight = hardwareMap.get(DcMotor.class, "rightClaw");
 
-//        foundationClip = hardwareMap.crservo.get("foundationClip");
+        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        leftServo = hardwareMap.get(CRServo.class, "leftServo");
-//        rightServo = hardwareMap.get(CRServo.class, "rightServo");
+        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ///////////////////////////////////////////////////////////////////////////////// Claw
+
+        ///////////////////////////////////////////////////////////////////////////////// Elevator
+        leftLift = hardwareMap.get(DcMotor.class, "leftLift");
+        rightLift = hardwareMap.get(DcMotor.class, "rightLift");
+
+        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ///////////////////////////////////////////////////////////////////////////////// Elevator
+
+        foundationClip = hardwareMap.crservo.get("foundationClip");
     }
 
     public void driveRobot() {
@@ -222,40 +238,42 @@ public class MechTeleOp extends OpMode {
         matrixToPowers(motorPowers);
 
         //claw control
-//        if (gamepad1.right_trigger >= 0.1) {
-//            clawRight.setPower(0.5);
-//        } else if (gamepad1.right_bumper) {
-//            clawRight.setPower(-0.5);
-//        } else {
-//            clawRight.setPower(0.0);
-//        }
-//
-//        if (gamepad1.left_trigger >= 0.1) {
-//            clawLeft.setPower(0.5);
-//        } else if (gamepad1.left_bumper) {
-//            clawLeft.setPower(-0.5);
-//        } else {
-//            clawLeft.setPower(0.0);
-//        }
+        if (gamepad1.right_trigger >= 0.1) {
+            clawRight.setPower(0.5);
+        } else if (gamepad1.right_bumper) {
+            clawRight.setPower(-0.5);
+        } else {
+            clawRight.setPower(0.0);
+        }
 
+        if (gamepad1.left_trigger >= 0.1) {
+            clawLeft.setPower(0.5);
+        } else if (gamepad1.left_bumper) {
+            clawLeft.setPower(-0.5);
+        } else {
+            clawLeft.setPower(0.0);
+        }
 
-//        //foundation clip control
-//        if (gamepad1.dpad_down) {
-//            foundationClip.setPower(1.0);
-//        } else if (gamepad1.dpad_up) {
-//            foundationClip.setPower(-1.0);
-//        } else {
-//            foundationClip.setPower(0.0);
-//        }
+        //lift control
+        if (gamepad1.dpad_up) {
+            leftLift.setPower(0.5);
+            rightLift.setPower(0.5);
+        } else if (gamepad1.dpad_down) {
+            leftLift.setPower(-0.5);
+            rightLift.setPower(-0.5);
+        } else {
+            leftLift.setPower(0.0);
+            rightLift.setPower(0.0);
+        }
 
-
-//        if(gamepad1.a) {
-//            moveForward(-1.0);
-//        } else if (gamepad1.b) {
-//            moveForward(-0.2);
-//        } else {
-//            moveForward(0.0);
-//        }
+        //foundation clip control
+        if (gamepad1.a) {
+            foundationClip.setPower(1.0);
+        } else if (gamepad1.b) {
+            foundationClip.setPower(-1.0);
+        } else {
+            foundationClip.setPower(0.0);
+        }
 
     }
 

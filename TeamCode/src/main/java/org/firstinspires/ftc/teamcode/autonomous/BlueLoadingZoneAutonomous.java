@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class BlueLoadingZoneAutonomous extends RobotController {
 
     public void runOpMode() {
+        initMotors();
         waitForStart();
 
         doAction("forward", 4);

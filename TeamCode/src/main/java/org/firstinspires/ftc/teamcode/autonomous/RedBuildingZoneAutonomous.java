@@ -8,6 +8,7 @@ public class RedBuildingZoneAutonomous extends RobotController {
     // {"forward", "backward", "left", "right", "rotate"}
 
     public void runOpMode() {
+        initMotors();
         waitForStart();
 
         doAction("right", 5);

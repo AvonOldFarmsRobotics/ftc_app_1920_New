@@ -178,10 +178,4 @@ public abstract class RobotController extends LinearOpMode {
 
         }
     }
-
-    public void waitForStart() {
-        initMotors();
-        super.waitForStart();
-    }
-
 }
