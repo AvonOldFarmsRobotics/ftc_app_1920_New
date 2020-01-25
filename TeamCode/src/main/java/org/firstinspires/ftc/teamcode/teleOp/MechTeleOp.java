@@ -269,6 +269,11 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         }
 
         //foundation clip control
+        controlFoundationClip();
+    }
+
+    //method used to control foundation clip
+    public void controlFoundationClip() {
         if (gamepad1.a) {
             foundationClip.setPower(1.0); // drop clip
         } else if (gamepad1.b) {
@@ -277,7 +282,6 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
             foundationClip.setPower(0.0); // stop
         }
     }
-
     //method used to control lift motors
     public void controlLift() {
         if (rightY > 0.1) {

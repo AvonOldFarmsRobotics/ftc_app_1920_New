@@ -30,7 +30,7 @@ public abstract class RobotController extends LinearOpMode {
     final double DRIVE_SPEED = 0.6;
     final double TURN_SPEED = 0.4;
 
-    private final String[] actions = {"forward", "backward", "left", "right", "rotate"}; //rotate = rotate right, negative rotate distance gives rotate left
+    private final String[] actions = {"forward", "backward", "left", "right", "rotateRight", "rotateLeft"}; //rotate = rotate right, negative rotate distance gives rotate left
 
     public void initMotors() {
         motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
@@ -44,10 +44,10 @@ public abstract class RobotController extends LinearOpMode {
 //        motorFR = hardwareMap.get(DcMotor.class, "backLeft");
 //        motorFL = hardwareMap.get(DcMotor.class, "backRight");
 
-        motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -58,6 +58,11 @@ public abstract class RobotController extends LinearOpMode {
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         foundationClip = hardwareMap.get(CRServo.class, "foundationClip");
 
@@ -107,6 +112,8 @@ public abstract class RobotController extends LinearOpMode {
             case 4:
                 rotateLeft(distance, distance * 2);
                 break;
+            case 5:
+                rotateLeft(-distance, distance * 2);
         }
 
         sleep(1000);

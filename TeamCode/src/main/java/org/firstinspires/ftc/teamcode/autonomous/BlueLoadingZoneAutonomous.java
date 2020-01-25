@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name = "Blue Loading Zone")
+@Disabled
 public class BlueLoadingZoneAutonomous extends RobotController {
 
     public void runOpMode() {

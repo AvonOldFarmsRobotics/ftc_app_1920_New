@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "Distance Tester")
-public class DistanceTester extends RobotController {
+@Autonomous(name = "TurnLeftToBridge")
+public class TurnLeftToBridge extends RobotController {
 
-    public void runOpMode() {
+    @Override
+    public void runOpMode() throws InterruptedException {
         initMotors();
         waitForStart();
 
