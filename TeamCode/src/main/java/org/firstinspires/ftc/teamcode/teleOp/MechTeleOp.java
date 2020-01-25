@@ -37,6 +37,8 @@ public class MechTeleOp extends OpMode {
     //servo for foundation clip
     CRServo foundationClip;
 
+    double leftX, leftY, rightX, rightY;
+
     //matrix corresponding to motors
     double[][] motorPowers = {
             {0.0, 0.0},
@@ -79,8 +81,6 @@ public class MechTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("gpad1LX", gamepad1.left_stick_x);
-        telemetry.addData("gpad1LY", gamepad1.left_stick_y);
         driveRobot();
         telemetry.update();
     }
@@ -91,10 +91,10 @@ public class MechTeleOp extends OpMode {
     }
 
     public void moveForward(double power) {
-        motorFL.setPower(Range.clip(calibFL * power, -1, 1));
-        motorFR.setPower(Range.clip(calibFR * power, -1, 1));
-        motorBL.setPower(Range.clip(calibBL * power, -1, 1));
-        motorBR.setPower(Range.clip(calibBR * power, -1, 1));
+        motorFL.setPower(Range.clip(-calibFL * power, -1, 1));
+        motorFR.setPower(Range.clip(-calibFR * power, -1, 1));
+        motorBL.setPower(Range.clip(-calibBL * power, -1, 1));
+        motorBR.setPower(Range.clip(-calibBR * power, -1, 1));
     }
 
     public void rotateLeft(double power) {
@@ -178,92 +178,65 @@ public class MechTeleOp extends OpMode {
 
         leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ///////////////////////////////////////////////////////////////////////////////// Elevator
 
         foundationClip = hardwareMap.crservo.get("foundationClip");
     }
 
     public void driveRobot() {
-        /* I want to change the movement code of the robot to
-         * a sumation based system. This means that each movement
-         * of the joystick will add some value (positive or negative)
-         * to each of the powers of the motors.
-         *
-         * This would let the robot have an increased range of motion.
-         * For instance, if you moved the left stick on a diagonal,
-         * the robot currently chooses to either go forward or straif.
-         * The addition system will add together some values for each motor
-         * to make the robot straif diagonally. */
 
-        /* So far the system, in theory, works exactly like Jimmy's code does
-         * This is probably a more visual explanation of what Jimmy is doing
-         * with his code. */
-        double leftX = getLX(), leftY = getLY(), rightX = getRX(), rightY = getRY();
+        updateJoystickVars();
+        reportJoysticks();
+//
+//        if(Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
+//            /* If we stick with a plain averaging system, both joysticks have to be
+//             * pressed forward or backwards to go max speed. This will also effect
+//             * the speeds of straifing and turning. A counterbalance can be added
+//             * to offset that effect.*/
+//
+//            leftXMat = new double[][]{  //straif
+//                    {leftX * 2, -leftX * 2}, //Here the negative will probably have to on the bottom motors
+//                    {-leftX * 1, leftX * 1}
+//            };
+//
+//            leftYMat = new double[][] { //forward/backward
+//                    { leftY,  leftY},
+//                    { leftY,  leftY}
+//            };
+//
+//            rightXMat = new double[][] { //rotate
+//                    {rightX, -rightX},
+//                    {rightX, -rightX}
+//            };
+//
+//            rightYMat = new double[][] { //forward/backward
+//                    { rightY,  rightY},
+//                    { rightY,  rightY}
+//            };
+//
+//            motorPowers = avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
+//
+//        }else{
+//            motorPowers = new double[][] {
+//                { 0.0,  0.0},
+//                { 0.0,  0.0}
+//            };
+//        }
 
-        if(Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
-            /* If we stick with a plain averaging system, both joysticks have to be
-             * pressed forward or backwards to go max speed. This will also effect
-             * the speeds of straifing and turning. A counterbalance can be added
-             * to offset that effect.*/
+        controlLift();
 
-            leftXMat = new double[][]{
-                    {leftX, -leftX}, //Here the negative will probably have to on the bottom motors
-                    {-leftX, leftX}
-            };
-
-            leftYMat = new double[][] {
-                    { leftY,  leftY},
-                    { leftY,  leftY}
-            };
-
-            rightXMat = new double[][] {
-                    {rightX, -rightX},
-                    {rightX, -rightX}
-            };
-
-            rightYMat = new double[][] {
-                    { rightY,  rightY},
-                    { rightY,  rightY}
-            };
-
-            motorPowers = avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
-
-        }else{
-            motorPowers = new double[][] {
-                { 0.0,  0.0},
-                { 0.0,  0.0}
-            };
-        }
-
-        matrixToPowers(motorPowers);
-
-        //claw control
-        if (gamepad1.right_trigger >= 0.1) {
-            clawRight.setPower(0.5);
-        } else if (gamepad1.right_bumper) {
-            clawRight.setPower(-0.5);
+        //extra function: If y is pressed, spit block and move back
+        if (gamepad1.y) {
+            clawLeft.setPower(-0.3);
+            clawRight.setPower(-0.3);
+            moveForward(-0.6);
         } else {
-            clawRight.setPower(0.0);
-        }
-
-        if (gamepad1.left_trigger >= 0.1) {
-            clawLeft.setPower(0.5);
-        } else if (gamepad1.left_bumper) {
-            clawLeft.setPower(-0.5);
-        } else {
-            clawLeft.setPower(0.0);
-        }
-
-        //lift control
-        if (gamepad1.dpad_up) {
-            leftLift.setPower(0.5);
-            rightLift.setPower(0.5);
-        } else if (gamepad1.dpad_down) {
-            leftLift.setPower(-0.5);
-            rightLift.setPower(-0.5);
-        } else {
-            leftLift.setPower(0.0);
-            rightLift.setPower(0.0);
+//            matrixToPowers(motorPowers);
+            controlMovement();
+            controlClaws();
         }
 
         //foundation clip control
@@ -274,7 +247,60 @@ public class MechTeleOp extends OpMode {
         } else {
             foundationClip.setPower(0.0);
         }
+    }
 
+    public void controlLift() {
+        if (rightY > 0.1) {
+            leftLift.setPower(0.5);
+            rightLift.setPower(0.5);
+        } else if (rightY < -0.1) {
+            leftLift.setPower(-0.5);
+            rightLift.setPower(-0.5);
+        } else {
+            leftLift.setPower(0.0);
+            rightLift.setPower(0.0);
+        }
+    }
+
+    public void controlMovement() {
+        if (Math.abs(leftX) > 0.1 || Math.abs(leftY) > 0.1) {
+            if (Math.abs(leftX) > Math.abs(leftY)) {
+                rotateLeft(leftX);
+                telemetry.addData("Drivetrain", "Rotating");
+            } else {
+                moveForward(leftY);
+                telemetry.addData("Drivetrain", "Forward/Back");
+            }
+        } else {
+            telemetry.addData("Drivetrain", "Stopped");
+            moveForward(0.0);
+        }
+    }
+
+    public void controlClaws() {
+        controlRightClaw();
+        controlLeftClaw();
+    }
+
+    public void controlRightClaw() {
+        if (gamepad1.right_trigger >= 0.1) {
+            clawRight.setPower(0.5);
+        } else if (gamepad1.right_bumper) {
+            clawRight.setPower(-0.3);
+        } else {
+            clawRight.setPower(0.0);
+        }
+
+    }
+
+    public void controlLeftClaw() {
+        if (gamepad1.left_trigger >= 0.1) {
+            clawLeft.setPower(0.5);
+        } else if (gamepad1.left_bumper) {
+            clawLeft.setPower(-0.3);
+        } else {
+            clawLeft.setPower(0.0);
+        }
     }
 
     public float getLX() {
@@ -291,6 +317,18 @@ public class MechTeleOp extends OpMode {
     
     public float getRY() {
         return gamepad1.right_stick_y;
+    }
+
+    public void updateJoystickVars() {
+        leftX = getLX();
+        leftY = -getLY();
+        rightX = getRX();
+        rightY = getRY();
+    }
+
+    public void reportJoysticks() {
+        telemetry.addData("gamepad LX", getLX());
+        telemetry.addData("gamepda LY", -getLY());
     }
 
 }

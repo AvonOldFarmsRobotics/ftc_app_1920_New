@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,6 +16,8 @@ public abstract class RobotController extends LinearOpMode {
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
+
+    CRServo foundationClip;
 
     final double calibFL = 1.00f;
     final double calibFR = 0.50f;
@@ -33,10 +36,16 @@ public abstract class RobotController extends LinearOpMode {
     private final String[] actions = {"forward", "backward", "left", "right", "rotate"};
 
     public void initMotors() {
-        motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
-        motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
-        motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
-        motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
+//        motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
+//        motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
+//        motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
+//        motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
+
+        // this is for 2019-20 Skystone FTC where the robot drives backwards during autonomous.
+        motorBR = hardwareMap.get(DcMotor.class, "frontLeft");
+        motorBL = hardwareMap.get(DcMotor.class, "frontRight");
+        motorFR = hardwareMap.get(DcMotor.class, "backLeft");
+        motorFL = hardwareMap.get(DcMotor.class, "backRight");
 
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -52,6 +61,9 @@ public abstract class RobotController extends LinearOpMode {
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        foundationClip = hardwareMap.get(CRServo.class, "foundationClip");
+
     }
 
     public void moveForwardRaw(double power) {
@@ -177,5 +189,17 @@ public abstract class RobotController extends LinearOpMode {
             sleep(1000);
 
         }
+    }
+
+    public void clipFoundation() {
+        foundationClip.setPower(0.5);
+        sleep(500);
+        foundationClip.setPower(0.0);
+    }
+
+    public void releaseFoundation() {
+        foundationClip.setPower(-0.5);
+        sleep(500);
+        foundationClip.setPower(0.0);
     }
 }
