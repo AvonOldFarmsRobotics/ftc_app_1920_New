@@ -4,13 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 public abstract class RobotController extends LinearOpMode {
-
-    HardwareMap hardwareMap;
 
     DcMotor motorFL;
     DcMotor motorFR;
@@ -20,9 +17,9 @@ public abstract class RobotController extends LinearOpMode {
     CRServo foundationClip;
 
     final double calibFL = 1.00f;
-    final double calibFR = 0.50f;
-    final double calibBL = 0.50f;
-    final double calibBR = 0.50f;
+    final double calibFR = 1.00f;
+    final double calibBL = 1.00f;
+    final double calibBR = 1.00f;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -33,19 +30,19 @@ public abstract class RobotController extends LinearOpMode {
     final double DRIVE_SPEED = 0.6;
     final double TURN_SPEED = 0.4;
 
-    private final String[] actions = {"forward", "backward", "left", "right", "rotate"};
+    private final String[] actions = {"forward", "backward", "left", "right", "rotate"}; //rotate = rotate right, negative rotate distance gives rotate left
 
     public void initMotors() {
-//        motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
-//        motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
-//        motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
-//        motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
+        motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
+        motorFR = hardwareMap.get(DcMotor.class, "frontRight"); // frontRight
+        motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
+        motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
 
         // this is for 2019-20 Skystone FTC where the robot drives backwards during autonomous.
-        motorBR = hardwareMap.get(DcMotor.class, "frontLeft");
-        motorBL = hardwareMap.get(DcMotor.class, "frontRight");
-        motorFR = hardwareMap.get(DcMotor.class, "backLeft");
-        motorFL = hardwareMap.get(DcMotor.class, "backRight");
+//        motorBR = hardwareMap.get(DcMotor.class, "frontLeft");
+//        motorBL = hardwareMap.get(DcMotor.class, "frontRight");
+//        motorFR = hardwareMap.get(DcMotor.class, "backLeft");
+//        motorFL = hardwareMap.get(DcMotor.class, "backRight");
 
         motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);

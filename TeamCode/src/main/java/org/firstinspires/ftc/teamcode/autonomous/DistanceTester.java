@@ -6,9 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class DistanceTester extends RobotController {
 
     public void runOpMode() {
+        initMotors();
         waitForStart();
 
-        doAction("forward", 5);
+        doAction("rotate", -1.5);
+        doAction("forward", -3);
 
         stop();
     }
