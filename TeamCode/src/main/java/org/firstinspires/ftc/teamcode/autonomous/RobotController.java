@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,8 +12,6 @@ public abstract class RobotController extends LinearOpMode {
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
-
-    CRServo foundationClip;
 
     final double calibFL = 1.00f;
     final double calibFR = 1.00f;
@@ -30,7 +27,7 @@ public abstract class RobotController extends LinearOpMode {
     final double DRIVE_SPEED = 0.6;
     final double TURN_SPEED = 0.4;
 
-    private final String[] actions = {"forward", "backward", "left", "right", "rotateRight", "rotateLeft"}; //rotate = rotate right, negative rotate distance gives rotate left
+    private final String[] actions = {"forward", "backward", "left", "right", "rotateRight", "rotateLeft"};
 
     public void initMotors() {
         motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
@@ -38,16 +35,10 @@ public abstract class RobotController extends LinearOpMode {
         motorBL = hardwareMap.get(DcMotor.class, "backLeft"); // backLeft
         motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
 
-        // this is for 2019-20 Skystone FTC where the robot drives backwards during autonomous.
-//        motorBR = hardwareMap.get(DcMotor.class, "frontLeft");
-//        motorBL = hardwareMap.get(DcMotor.class, "frontRight");
-//        motorFR = hardwareMap.get(DcMotor.class, "backLeft");
-//        motorFL = hardwareMap.get(DcMotor.class, "backRight");
-
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -63,8 +54,6 @@ public abstract class RobotController extends LinearOpMode {
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        foundationClip = hardwareMap.get(CRServo.class, "foundationClip");
 
     }
 
@@ -82,7 +71,7 @@ public abstract class RobotController extends LinearOpMode {
         motorBR.setPower(calibBR * power);
     }
 
-    public void straifLeftRaw(double power) {
+    public void strafeLeftRaw(double power) {
         motorFL.setPower(calibFL * -power);
         motorFR.setPower(calibFR * -power);
         motorBL.setPower(calibBR * power);
@@ -104,10 +93,10 @@ public abstract class RobotController extends LinearOpMode {
                 moveForward(-distance, distance * 2);
                 break;
             case 2:
-                straifLeft(distance, distance * 2);
+                strafeLeft(distance, distance * 2);
                 break;
             case 3:
-                straifLeft(-distance, distance * 2);
+                strafeLeft(-distance, distance * 2);
                 break;
             case 4:
                 rotateLeft(distance, distance * 2);
@@ -128,30 +117,27 @@ public abstract class RobotController extends LinearOpMode {
         encoderDrive(TURN_SPEED, -distance, distance, timeout, false);
     }
 
-    public void straifLeft(double distance, double timeout) {
+    public void strafeLeft(double distance, double timeout) {
         encoderDrive(DRIVE_SPEED, -distance, -distance, timeout, true);
     }
 
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS,
-                             boolean straif) {
+                             boolean strafe) {
         int newFL;
         int newFR;
         int newBL;
         int newBR;
 
-        int straifCoef = 1;
-        if (straif) {
-            straifCoef = -1;
-        }
+        int strafeCoef = strafe ? -1 : 1;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newFL = motorFL.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH * straifCoef);
-            newFR = motorFR.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH * straifCoef);
+            newFL = motorFL.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH * strafeCoef);
+            newFR = motorFR.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH * strafeCoef);
             newBL = motorBL.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
             newBR = motorBR.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
 
@@ -189,21 +175,6 @@ public abstract class RobotController extends LinearOpMode {
             motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(1000);
-
         }
-    }
-
-    public void clipFoundation() {
-        foundationClip.setPower(0.5);
-        sleep(500);
-        foundationClip.setPower(0.0);
-    }
-
-    public void releaseFoundation() {
-        foundationClip.setPower(-0.5);
-        sleep(500);
-        foundationClip.setPower(0.0);
     }
 }

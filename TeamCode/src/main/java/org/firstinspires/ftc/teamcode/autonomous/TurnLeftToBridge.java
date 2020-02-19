@@ -10,17 +10,6 @@ public class TurnLeftToBridge extends RobotController {
         initMotors();
         waitForStart();
 
-        moveForwardRaw(0.5);
-        sleep(500);
-        moveForwardRaw(0.0);
-        sleep(1500);
-        rotateLeftRaw(0.5);
-        sleep(850);
-        rotateLeftRaw(0.0);
-        sleep(1500);
-        moveForwardRaw(0.5);
-        sleep(1000);
-        moveForwardRaw(0.0);
 
         stop();
     }

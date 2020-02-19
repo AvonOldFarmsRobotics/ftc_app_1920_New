@@ -27,46 +27,46 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
     final double calibBL = 1.0f;
     final double calibBR = 1.0f;
 
-    //claw motors
-    DcMotor clawLeft;
-    DcMotor clawRight;
-
-    //lifting motors
-    DcMotor leftLift;
-    DcMotor rightLift;
-
-    //servo for foundation clip
-    CRServo foundationClip;
+//    //claw motors
+//    DcMotor clawLeft;
+//    DcMotor clawRight;
+//
+//    //lifting motors
+//    DcMotor leftLift;
+//    DcMotor rightLift;
+//
+//    //servo for foundation clip
+//    CRServo foundationClip;
 
     //joystick variables
     double leftX, leftY, rightX, rightY;
 
     //matrix corresponding to motors
-//    double[][] motorPowers = {
-//            {0.0, 0.0},
-//            {0.0, 0.0}
-//    };
-//
-//    //matrix corresponding to
-//    double[][] leftXMat = {
-//            { 0.0,  0.0},
-//            { 0.0,  0.0}
-//    };
-//
-//    double[][] leftYMat = {
-//            { 0.0,  0.0},
-//            { 0.0,  0.0}
-//    };
-//
-//    double[][] rightXMat = {
-//            { 0.0,  0.0},
-//            { 0.0,  0.0}
-//    };
-//
-//    double[][] rightYMat = {
-//            { 0.0,  0.0},
-//            { 0.0,  0.0}
-//    };
+    double[][] motorPowers = {
+            {0.0, 0.0},
+            {0.0, 0.0}
+    };
+
+    //matrix corresponding to
+    double[][] leftXMat = {
+            {0.0, 0.0},
+            {0.0, 0.0}
+    };
+
+    double[][] leftYMat = {
+            {0.0, 0.0},
+            {0.0, 0.0}
+    };
+
+    double[][] rightXMat = {
+            {0.0, 0.0},
+            {0.0, 0.0}
+    };
+
+    double[][] rightYMat = {
+            {0.0, 0.0},
+            {0.0, 0.0}
+    };
 
     //constructor
     public MechTeleOp() {
@@ -89,16 +89,16 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         telemetry.update(); // update the driver station's message feed
     }
 
-    //executed when the "stop squar" is pressed
+    //executed when the "stop squar" is pressed, stop all motors/servos
     @Override
     public void stop() {
         moveForward(0.0);
-        clawLeft.setPower(0.0);
-        clawRight.setPower(0.0);
-        leftLift.setPower(0.0);
-        rightLift.setPower(0.0);
-        foundationClip.setPower(0.0);
-    } // stop all motors/servos
+//        clawLeft.setPower(0.0);
+//        clawRight.setPower(0.0);
+//        leftLift.setPower(0.0);
+//        rightLift.setPower(0.0);
+//        foundationClip.setPower(0.0);
+    }
 
     //set drivetrain motors' power to move robot forward. negative parameter moves backwards
     public void moveForward(double power) {
@@ -125,37 +125,36 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
     }
 
     // set matrices' data to motor power (used along with matrices to control the drivetrain motors)
-//    public void matrixToPowers(double[][] power) {
-//        motorFL.setPower(calibFL * power[0][0]);
-//        motorFR.setPower(calibFR * power[0][1]);
-//        motorBL.setPower(calibBL * power[1][0]);
-//        motorBR.setPower(calibBR * power[1][1]);
-//    }
+    public void matrixToPowers(double[][] power) {
+        motorFL.setPower(calibFL * power[0][0]);
+        motorFR.setPower(calibFR * power[0][1]);
+        motorBL.setPower(calibBL * power[1][0]);
+        motorBR.setPower(calibBR * power[1][1]);
+    }
 
     // find the average of the matrices (used along with matrices to control the drivetrain motors)
-//    public double[][] avgPowerMatrix(double[][] leftY, double[][] leftX, double[][] rightY, double[][]rightX){
-//        double[][] result = {
-//                { 0.0,  0.0},
-//                { 0.0,  0.0}
-//        };
-//
-//        for (int i = 0; i < 2; i++) {
-//            for (int k = 0; k < 2; k++) {
-//                result[i][k] = leftY[i][k] + leftX[i][k] + rightY[i][k] + rightX[i][k];
-//            }
-//        }
-//
-//        for (int i = 0; i < 2; i++) {
-//            for (int k = 0; k < 2; k++) {
-//                result[i][k] /= 2;
-//            }
-//        }
-//
-//        return result;
-//    }
+    public double[][] avgPowerMatrix(double[][] leftY, double[][] leftX, double[][] rightY, double[][] rightX) {
+        double[][] result = {
+                {0.0, 0.0},
+                {0.0, 0.0}
+        };
+
+        for (int i = 0; i < 2; i++) {
+            for (int k = 0; k < 2; k++) {
+                result[i][k] = leftY[i][k] + leftX[i][k] + rightY[i][k] + rightX[i][k];
+            }
+        }
+
+        for (int i = 0; i < 2; i++) {
+            for (int k = 0; k < 2; k++) {
+                result[i][k] /= 2;
+            }
+        }
+
+        return result;
+    }
 
     public void setupMotors() {
-
         ///////////////////////////////////////////////////////////////////////////////// Drive Train
         //assign motors fetched from hardwaremap to motor variables
         motorFL = hardwareMap.get(DcMotor.class, "frontLeft"); // frontLeft
@@ -164,8 +163,8 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         motorBR = hardwareMap.get(DcMotor.class, "backRight"); // backRight
 
         //assign direction for each motor
-        motorFL.setDirection(DcMotorSimple.Direction.FORWARD);
-        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -177,40 +176,40 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         ///////////////////////////////////////////////////////////////////////////////// Drive Train
 
         ///////////////////////////////////////////////////////////////////////////////// Claw
-        //assign claw motors to claw variables
-        clawLeft = hardwareMap.get(DcMotor.class, "leftClaw");
-        clawRight = hardwareMap.get(DcMotor.class, "rightClaw");
-
-        //assign claw motor directions
-        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //assign claw motors runmode
-        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        //assign claw motors to claw variables
+//        clawLeft = hardwareMap.get(DcMotor.class, "leftClaw");
+//        clawRight = hardwareMap.get(DcMotor.class, "rightClaw");
+//
+//        //assign claw motor directions
+//        clawLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//        clawRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//
+//        //assign claw motors runmode
+//        clawLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        clawRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ///////////////////////////////////////////////////////////////////////////////// Claw
 
         ///////////////////////////////////////////////////////////////////////////////// Elevator
-        //assign lift motors from hardwaremap to lift variables
-        leftLift = hardwareMap.get(DcMotor.class, "leftLift");
-        rightLift = hardwareMap.get(DcMotor.class, "rightLift");
-
-        //set lift directions
-        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //set lift motor runmode
-        leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        //make the motors brake when not powered
-        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        //assign lift motors from hardwaremap to lift variables
+//        leftLift = hardwareMap.get(DcMotor.class, "leftLift");
+//        rightLift = hardwareMap.get(DcMotor.class, "rightLift");
+//
+//        //set lift directions
+//        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
+//        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+//
+//        //set lift motor runmode
+//        leftLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rightLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        //make the motors brake when not powered
+//        leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ///////////////////////////////////////////////////////////////////////////////// Elevator
 
         ///////////////////////////////////////////////////////////////////////////////// Foundation
-        // assign foundation servo to variable
-        foundationClip = hardwareMap.crservo.get("foundationClip");
+//        // assign foundation servo to variable
+//        foundationClip = hardwareMap.crservo.get("foundationClip");
         ///////////////////////////////////////////////////////////////////////////////// Foundation
     }
 
@@ -218,83 +217,46 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
     public void driveRobot() {
         updateJoystickVars();   //fetch joystick values from gamepad
         reportJoysticks();      //report joystick values to drive station
-
-        //drivetrain control with matrices for mechanum wheels
-//        if(Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1){ // Makes sure that atleast one of the sticks is being pressed
-//            /* If we stick with a plain averaging system, both joysticks have to be
-//             * pressed forward or backwards to go max speed. This will also effect
-//             * the speeds of straifing and turning. A counterbalance can be added
-//             * to offset that effect.*/
-//
-//            leftXMat = new double[][]{  //straif
-//                    {leftX * 2, -leftX * 2}, //Here the negative will probably have to on the bottom motors
-//                    {-leftX * 1, leftX * 1}
-//            };
-//
-//            leftYMat = new double[][] { //forward/backward
-//                    { leftY,  leftY},
-//                    { leftY,  leftY}
-//            };
-//
-//            rightXMat = new double[][] { //rotate
-//                    {rightX, -rightX},
-//                    {rightX, -rightX}
-//            };
-//
-//            rightYMat = new double[][] { //forward/backward
-//                    { rightY,  rightY},
-//                    { rightY,  rightY}
-//            };
-//
-//            motorPowers = avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
-//
-//        }else{
-//            motorPowers = new double[][] {
-//                { 0.0,  0.0},
-//                { 0.0,  0.0}
-//            };
-//        }
-
-        controlLift();  //see method declaration
+        controlMovementWithMatrices();
+//        controlLift();  //see method declaration
 
         //extra function: If y is pressed, spit block and move back
-        if (gamepad1.y) {
-            clawLeft.setPower(-0.4);    //spit block
-            clawRight.setPower(-0.4);   //spit block
-            moveForward(-0.6);   //move back
-        } else {
-//            matrixToPowers(motorPowers);
-            controlMovement();  //see method declaration
-            controlClaws();     //see method declaration
-        }
+//        if (gamepad1.y) {
+//            clawLeft.setPower(-0.4);    //spit block
+//            clawRight.setPower(-0.4);   //spit block
+//            moveForward(-0.6);   //move back
+//        } else {
+//            controlMovement();  //see method declaration
+//            controlClaws();     //see method declaration
+//        }
 
         //foundation clip control
-        controlFoundationClip();
+//        controlFoundationClip();
     }
 
-    //method used to control foundation clip
-    public void controlFoundationClip() {
-        if (gamepad1.a) {
-            foundationClip.setPower(1.0); // drop clip
-        } else if (gamepad1.b) {
-            foundationClip.setPower(-1.0); // raise clip
-        } else {
-            foundationClip.setPower(0.0); // stop
-        }
-    }
-    //method used to control lift motors
-    public void controlLift() {
-        if (rightY > 0.1) {
-            leftLift.setPower(0.5);
-            rightLift.setPower(0.5);
-        } else if (rightY < -0.1) {
-            leftLift.setPower(-0.5);
-            rightLift.setPower(-0.5);
-        } else {
-            leftLift.setPower(0.0);
-            rightLift.setPower(0.0);
-        }
-    }
+//    //method used to control foundation clip
+//    public void controlFoundationClip() {
+//        if (gamepad1.a) {
+//            foundationClip.setPower(1.0); // drop clip
+//        } else if (gamepad1.b) {
+//            foundationClip.setPower(-1.0); // raise clip
+//        } else {
+//            foundationClip.setPower(0.0); // stop
+//        }
+//    }
+//    //method used to control lift motors
+//    public void controlLift() {
+//        if (rightY > 0.1) {
+//            leftLift.setPower(0.5);
+//            rightLift.setPower(0.5);
+//        } else if (rightY < -0.1) {
+//            leftLift.setPower(-0.5);
+//            rightLift.setPower(-0.5);
+//        } else {
+//            leftLift.setPower(0.0);
+//            rightLift.setPower(0.0);
+//        }
+//    }
 
     //method used to control robot drivetrain
     public void controlMovement() {
@@ -312,34 +274,34 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         }
     }
 
-    //method used to control the claw motors
-    public void controlClaws() {
-        controlRightClaw(); //see method declaration
-        controlLeftClaw(); //see method declaration
-    }
+//    //method used to control the claw motors
+//    public void controlClaws() {
+//        controlRightClaw(); //see method declaration
+//        controlLeftClaw(); //see method declaration
+//    }
 
-    //method used to control the right claw motor
-    public void controlRightClaw() {
-        if (gamepad1.right_trigger >= 0.1) {
-            clawRight.setPower(0.5);
-        } else if (gamepad1.right_bumper) {
-            clawRight.setPower(-0.3);
-        } else {
-            clawRight.setPower(0.0);
-        }
-
-    }
-
-    //method used to control the left claw motor
-    public void controlLeftClaw() {
-        if (gamepad1.left_trigger >= 0.1) {
-            clawLeft.setPower(0.5);
-        } else if (gamepad1.left_bumper) {
-            clawLeft.setPower(-0.3);
-        } else {
-            clawLeft.setPower(0.0);
-        }
-    }
+//    //method used to control the right claw motor
+//    public void controlRightClaw() {
+//        if (gamepad1.right_trigger >= 0.1) {
+//            clawRight.setPower(0.5);
+//        } else if (gamepad1.right_bumper) {
+//            clawRight.setPower(-0.3);
+//        } else {
+//            clawRight.setPower(0.0);
+//        }
+//
+//    }
+//
+//    //method used to control the left claw motor
+//    public void controlLeftClaw() {
+//        if (gamepad1.left_trigger >= 0.1) {
+//            clawLeft.setPower(0.5);
+//        } else if (gamepad1.left_bumper) {
+//            clawLeft.setPower(-0.3);
+//        } else {
+//            clawLeft.setPower(0.0);
+//        }
+//    }
 
     //fetch gamepad left joystic's x value
     public float getLX() {
@@ -366,7 +328,7 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         leftX = getLX();
         leftY = -getLY();
         rightX = getRX();
-        rightY = getRY();
+        rightY = -getRY();
     }
 
     //send the values of the joysticks to the driver station
@@ -374,7 +336,46 @@ public class MechTeleOp extends OpMode {    //class declaration with OpMode as s
         telemetry.addData("gamepad LX", getLX());
         telemetry.addData("gamepda LY", -getLY());
         telemetry.addData("gamepad RX", getRX());
-        telemetry.addData("gamepda RY", getRY());
+        telemetry.addData("gamepda RY", -getRY());
+    }
+
+    public void controlMovementWithMatrices() {
+        //drivetrain control with matrices for mechanum wheels
+        if (Math.max(Math.max(Math.abs(leftX), Math.abs(leftY)), Math.max(Math.abs(rightX), Math.abs(rightY))) > 0.1) { // Makes sure that atleast one of the sticks is being pressed
+            /* If we stick with a plain averaging system, both joysticks have to be
+             * pressed forward or backwards to go max speed. This will also effect
+             * the speeds of straifing and turning. A counterbalance can be added
+             * to offset that effect.*/
+
+            leftXMat = new double[][]{  //straif
+                    {leftX, leftX}, //Here the negative will probably have to on the bottom motors
+                    {-leftX, -leftX}
+            };
+
+            leftYMat = new double[][]{ //forward/backward
+                    {-leftY, -leftY},
+                    {-leftY, -leftY}
+            };
+
+            rightXMat = new double[][]{ //rotate
+                    {-rightX, rightX},
+                    {-rightX, rightX}
+            };
+
+            rightYMat = new double[][]{ //forward/backward
+                    {-rightY, -rightY},
+                    {-rightY, -rightY}
+            };
+
+            motorPowers = avgPowerMatrix(leftYMat, leftXMat, rightYMat, rightXMat);
+
+        } else {
+            motorPowers = new double[][]{
+                    {0.0, 0.0},
+                    {0.0, 0.0}
+            };
+        }
+        matrixToPowers(motorPowers);
     }
 
 }
